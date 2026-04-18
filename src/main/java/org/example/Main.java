@@ -5,10 +5,19 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    private static ArrayList<Employee> employees = new ArrayList<>();
+    private static Company company;
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        System.out.print("Введіть назву компанії: ");
+        String companyName = scanner.nextLine();
+        try {
+            company = new Company(companyName);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: " + e.getMessage() + ". Використано назву за замовчуванням 'Невідома компанія'");
+            company = new Company("Невідома компанія");
+        }
+
         while (true) {
             printMenu();
             int choice = readIntInput("Ваш вибір: ");
@@ -17,9 +26,15 @@ public class Main {
                     createNewEmployee();
                     break;
                 case 2:
-                    displayAllEmployees();
+                    company.displayAllEmployees();
                     break;
                 case 3:
+                    demonstrateCopyConstructor();
+                    break;
+                case 4:
+                    showStaticCounter();
+                    break;
+                case 5:
                     System.out.println("До побачення!");
                     scanner.close();
                     return;
@@ -31,9 +46,11 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\n===== МЕНЮ =====");
-        System.out.println("1. Створити нового працівника");
-        System.out.println("2. Вивести всіх працівників");
-        System.out.println("3. Вийти");
+        System.out.println("1. Створити нового працівника і додати в компанію");
+        System.out.println("2. Вивести всіх працівників компанії");
+        System.out.println("3. Демонстрація конструктора копіювання");
+        System.out.println("4. Показати загальну кількість створених працівників (статичний лічильник)");
+        System.out.println("5. Вийти");
     }
 
     private static void createNewEmployee() {
@@ -41,28 +58,35 @@ public class Main {
         String name = readNonEmptyString("Ім'я: ");
         int id = readPositiveInt("ID (додатне число): ");
         double salary = readNonNegativeDouble("Зарплата (>=0): ");
-        String position = readNonEmptyString("Посада: ");
+        Position position = readPosition("Посада (DEVELOPER, MANAGER, ANALYST, HR, ADMINISTRATOR, INTERN): ");
         String email = readEmail("Email (має містити '@'): ");
         int age = readAge("Вік (1-99): ");
 
         try {
             Employee emp = new Employee(name, id, salary, position, email, age);
-            employees.add(emp);
-            System.out.println("Працівника успішно додано!");
+            company.addEmployee(emp);
+            System.out.println("Працівника успішно додано до компанії!");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка при створенні: " + e.getMessage());
         }
     }
 
-    private static void displayAllEmployees() {
+    private static void demonstrateCopyConstructor() {
+        System.out.println("\nДемонстрація конструктора копіювання");
+        ArrayList<Employee> employees = company.getEmployees();
         if (employees.isEmpty()) {
-            System.out.println("Список працівників порожній.");
-        } else {
-            System.out.println("\nСписок працівників");
-            for (Employee emp : employees) {
-                System.out.println(emp);
-            }
+            System.out.println("Спочатку створіть хоча б одного працівника.");
+            return;
         }
+        Employee original = employees.get(0);
+        Employee copy = new Employee(original);
+        System.out.println("Оригінал: " + original);
+        System.out.println("Копія:    " + copy);
+    }
+
+    private static void showStaticCounter() {
+        System.out.println("\nСтатичний лічильник");
+        System.out.println("Всього створено об'єктів Employee: " + Employee.getTotalEmployees());
     }
 
     //Допоміжні методи для безпечного введення
@@ -143,6 +167,18 @@ public class Main {
             } catch (InputMismatchException e) {
                 System.out.println("Помилка: введіть ціле число.");
                 scanner.nextLine();
+            }
+        }
+    }
+
+    private static Position readPosition(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim().toUpperCase();
+            try {
+                return Position.valueOf(input);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Помилка: невідома посада. Доступні: DEVELOPER, MANAGER, ANALYST, HR, ADMINISTRATOR, INTERN");
             }
         }
     }

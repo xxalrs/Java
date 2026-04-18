@@ -3,24 +3,35 @@ package org.example;
 import java.util.Objects;
 
 public class Employee {
+    private static int totalEmployees = 0;
     private String name;
     private int id;
     private double salary;
-    private String position;
+    private Position position;
     private String email;
     private int age;
 
     // Конструктор
-    public Employee(String name, int id, double salary, String position, String email, int age) {
+    public Employee(String name, int id, double salary, Position position, String email, int age) {
         setName(name);
         setId(id);
         setSalary(salary);
         setPosition(position);
         setEmail(email);
         setAge(age);
+        totalEmployees++;
+    }
+
+    // Конструктор копіювання
+    public Employee(Employee other) {
+        this(other.name, other.id, other.salary, other.position, other.email, other.age);
     }
 
     // Гетери та сетери
+    public static int getTotalEmployees() {
+        return totalEmployees;
+    }
+
     public String getName() {
         return name;
     }
@@ -54,13 +65,13 @@ public class Employee {
         this.salary = salary;
     }
 
-    public String getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(String position) {
-        if (position == null || position.trim().isEmpty()) {
-            throw new IllegalArgumentException("Посада не може бути порожньою");
+    public void setPosition(Position position) {
+        if (position == null) {
+            throw new IllegalArgumentException("Посада не може бути null");
         }
         this.position = position;
     }

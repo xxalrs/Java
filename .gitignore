@@ -37,10 +37,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-# Compiled files
-*.class
-
-# IDE files
-.idea/
-.settings/

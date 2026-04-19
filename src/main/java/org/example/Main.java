@@ -5,34 +5,25 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    private static Company company;
+    private static ArrayList<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.print("Введіть назву компанії: ");
-        String companyName = scanner.nextLine();
-        try {
-            company = new Company(companyName);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Помилка: " + e.getMessage() + ". Використано назву за замовчуванням 'Невідома компанія'");
-            company = new Company("Невідома компанія");
-        }
-
         while (true) {
             printMenu();
             int choice = readIntInput("Ваш вибір: ");
             switch (choice) {
                 case 1:
-                    createNewEmployee();
+                    createEmployee();
                     break;
                 case 2:
-                    company.displayAllEmployees();
+                    createContractEmployee();
                     break;
                 case 3:
-                    demonstrateCopyConstructor();
+                    createFullTimeEmployee();
                     break;
                 case 4:
-                    showStaticCounter();
+                    displayAllEmployees();
                     break;
                 case 5:
                     System.out.println("До побачення!");
@@ -46,47 +37,78 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\n===== МЕНЮ =====");
-        System.out.println("1. Створити нового працівника і додати в компанію");
-        System.out.println("2. Вивести всіх працівників компанії");
-        System.out.println("3. Демонстрація конструктора копіювання");
-        System.out.println("4. Показати загальну кількість створених працівників (статичний лічильник)");
+        System.out.println("1. Створити базового працівника (Employee)");
+        System.out.println("2. Створити контрактного працівника (ContractEmployee)");
+        System.out.println("3. Створити штатного працівника (FullTimeEmployee)");
+        System.out.println("4. Вивести всіх працівників");
         System.out.println("5. Вийти");
     }
 
-    private static void createNewEmployee() {
-        System.out.println("\nСтворення нового працівника");
-        String name = readNonEmptyString("Ім'я: ");
-        int id = readPositiveInt("ID (додатне число): ");
-        double salary = readNonNegativeDouble("Зарплата (>=0): ");
-        Position position = readPosition("Посада (DEVELOPER, MANAGER, ANALYST, HR, ADMINISTRATOR, INTERN): ");
-        String email = readEmail("Email (має містити '@'): ");
-        int age = readAge("Вік (1-99): ");
-
+    private static void createEmployee() {
+        System.out.println("\n--- Створення базового працівника ---");
         try {
-            Employee emp = new Employee(name, id, salary, position, email, age);
-            company.addEmployee(emp);
-            System.out.println("Працівника успішно додано до компанії!");
+            Employee emp = new Employee(
+                    readNonEmptyString("Ім'я: "),
+                    readPositiveInt("ID: "),
+                    readNonNegativeDouble("Зарплата: "),
+                    readPosition("Посада: "),
+                    readEmail("Email: "),
+                    readAge("Вік: ")
+            );
+            employees.add(emp);
+            System.out.println("Працівника додано!");
         } catch (IllegalArgumentException e) {
-            System.out.println("Помилка при створенні: " + e.getMessage());
+            System.out.println("Помилка: " + e.getMessage());
         }
     }
 
-    private static void demonstrateCopyConstructor() {
-        System.out.println("\nДемонстрація конструктора копіювання");
-        ArrayList<Employee> employees = company.getEmployees();
+    private static void createContractEmployee() {
+        System.out.println("\n--- Створення контрактного працівника ---");
+        try {
+            ContractEmployee emp = new ContractEmployee(
+                    readNonEmptyString("Ім'я: "),
+                    readPositiveInt("ID: "),
+                    readNonNegativeDouble("Зарплата: "),
+                    readPosition("Посада: "),
+                    readEmail("Email: "),
+                    readAge("Вік: "),
+                    readPositiveInt("Тривалість контракту (місяці): ")
+            );
+            employees.add(emp);
+            System.out.println("Контрактного працівника додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void createFullTimeEmployee() {
+        System.out.println("\n--- Створення штатного працівника ---");
+        try {
+            FullTimeEmployee emp = new FullTimeEmployee(
+                    readNonEmptyString("Ім'я: "),
+                    readPositiveInt("ID: "),
+                    readNonNegativeDouble("Зарплата: "),
+                    readPosition("Посада: "),
+                    readEmail("Email: "),
+                    readAge("Вік: "),
+                    readNonNegativeDouble("Річна премія: ")
+            );
+            employees.add(emp);
+            System.out.println("Штатного працівника додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void displayAllEmployees() {
         if (employees.isEmpty()) {
-            System.out.println("Спочатку створіть хоча б одного працівника.");
-            return;
+            System.out.println("Список працівників порожній.");
+        } else {
+            System.out.println("\n=== Список усіх працівників ===");
+            for (Employee emp : employees) {
+                System.out.println(emp);
+            }
         }
-        Employee original = employees.get(0);
-        Employee copy = new Employee(original);
-        System.out.println("Оригінал: " + original);
-        System.out.println("Копія:    " + copy);
-    }
-
-    private static void showStaticCounter() {
-        System.out.println("\nСтатичний лічильник");
-        System.out.println("Всього створено об'єктів Employee: " + Employee.getTotalEmployees());
     }
 
     //Допоміжні методи для безпечного введення

@@ -4,30 +4,40 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 
-class InheritanceTest {
+class ExtendedHierarchyTest {
 
     @Test
-    void testContractEmployeeCreation() {
-        ContractEmployee emp = new ContractEmployee("John", 10, 2000.0, Position.DEVELOPER, "john@test.com", 30, 12);
-        assertEquals(12, emp.getContractDuration());
-        assertTrue(emp.toString().contains("contractDuration=12"));
+    void testInternEmployeeCreation() {
+        InternEmployee intern = new InternEmployee(
+                "Anna", 101, 5000.0, Position.INTERN, "anna@test.com", 20,
+                "KPI", 6
+        );
+        assertEquals("KPI", intern.getUniversity());
+        assertEquals(6, intern.getInternshipDuration());
+        assertTrue(intern.toString().contains("InternEmployee"));
     }
 
     @Test
-    void testFullTimeEmployeeCreation() {
-        FullTimeEmployee emp = new FullTimeEmployee("Jane", 20, 3000.0, Position.MANAGER, "jane@test.com", 35, 500.0);
-        assertEquals(500.0, emp.getBonus());
-        assertTrue(emp.toString().contains("bonus=500.0"));
+    void testRemoteEmployeeCreation() {
+        RemoteEmployee remote = new RemoteEmployee(
+                "Oleg", 102, 7000.0, Position.DEVELOPER, "oleg@test.com", 28,
+                "Slack, Zoom, Jira", 25.5
+        );
+        assertEquals("Slack, Zoom, Jira", remote.getRemoteTools());
+        assertEquals(25.5, remote.getHourlyRate());
+        assertTrue(remote.toString().contains("RemoteEmployee"));
     }
 
     @Test
-    void testPolymorphismInArrayList() {
+    void testAllTypesInOneList() {
         ArrayList<Employee> list = new ArrayList<>();
-        list.add(new Employee("Base", 1, 1000.0, Position.INTERN, "base@test.com", 20));
-        list.add(new ContractEmployee("Contract", 2, 1500.0, Position.DEVELOPER, "contract@test.com", 25, 6));
-        list.add(new FullTimeEmployee("Full", 3, 2000.0, Position.ANALYST, "full@test.com", 30, 200.0));
-        assertEquals(3, list.size());
-        assertTrue(list.get(1).toString().contains("ContractEmployee"));
-        assertTrue(list.get(2).toString().contains("FullTimeEmployee"));
+        list.add(new Employee("Base", 1, 1000, Position.HR, "base@test.com", 30));
+        list.add(new ContractEmployee("Contract", 2, 2000, Position.DEVELOPER, "con@test.com", 25, 12));
+        list.add(new FullTimeEmployee("Full", 3, 3000, Position.MANAGER, "full@test.com", 40, 500));
+        list.add(new InternEmployee("Intern", 4, 400, Position.INTERN, "int@test.com", 19, "LNU", 3));
+        list.add(new RemoteEmployee("Remote", 5, 5000, Position.ANALYST, "rem@test.com", 35, "Teams", 30.0));
+        assertEquals(5, list.size());
+        assertTrue(list.get(3) instanceof InternEmployee);
+        assertTrue(list.get(4) instanceof RemoteEmployee);
     }
 }

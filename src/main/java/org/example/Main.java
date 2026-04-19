@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -7,8 +8,10 @@ import java.util.Scanner;
 public class Main {
     private static ArrayList<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
+    private static final String DATA_FILE = "input.txt";
 
     public static void main(String[] args) {
+        loadFromFile(DATA_FILE);
         while (true) {
             printMenu();
             int choice = readIntInput("Ваш вибір: ");
@@ -32,6 +35,7 @@ public class Main {
                     displayAllEmployees();
                     break;
                 case 7:
+                    saveToFile(DATA_FILE);
                     System.out.println("До побачення!");
                     scanner.close();
                     return;
@@ -50,6 +54,43 @@ public class Main {
         System.out.println("5. Створити віддаленого працівника (RemoteEmployee)");
         System.out.println("6. Вивести всіх працівників");
         System.out.println("7. Вийти");
+    }
+
+    //Файлові операції
+    private static void loadFromFile(String filename) {
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("Файл " + filename + " не знайдено. Розпочинаємо з порожньою колекцією.");
+            return;
+        }
+        try (Scanner fileScanner = new Scanner(file)) {
+            int lineNum = 0;
+            while (fileScanner.hasNextLine()) {
+                lineNum++;
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) continue;
+                Employee emp = parseEmployeeFromLine(line);
+                if (emp != null) {
+                    employees.add(emp);
+                } else {
+                    System.out.println("Попередження: рядок " + lineNum + " має некоректний формат і пропущений.");
+                }
+            }
+            System.out.println("Завантажено " + employees.size() + " працівників з файлу " + filename);
+        } catch (IOException e) {
+            System.out.println("Помилка читання файлу: " + e.getMessage());
+        }
+    }
+
+    private static void saveToFile(String filename) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
+            for (Employee emp : employees) {
+                writer.println(serializeEmployee(emp));
+            }
+            System.out.println("Збережено " + employees.size() + " записів у файл " + filename);
+        } catch (IOException e) {
+            System.out.println("Помилка запису у файл: " + e.getMessage());
+        }
     }
 
     private static void createEmployee() {

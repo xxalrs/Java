@@ -23,9 +23,15 @@ public class Main {
                     createFullTimeEmployee();
                     break;
                 case 4:
-                    displayAllEmployees();
+                    createInternEmployee();
                     break;
                 case 5:
+                    createRemoteEmployee();
+                    break;
+                case 6:
+                    displayAllEmployees();
+                    break;
+                case 7:
                     System.out.println("До побачення!");
                     scanner.close();
                     return;
@@ -40,8 +46,10 @@ public class Main {
         System.out.println("1. Створити базового працівника (Employee)");
         System.out.println("2. Створити контрактного працівника (ContractEmployee)");
         System.out.println("3. Створити штатного працівника (FullTimeEmployee)");
-        System.out.println("4. Вивести всіх працівників");
-        System.out.println("5. Вийти");
+        System.out.println("4. Створити стажиста (InternEmployee)");
+        System.out.println("5. Створити віддаленого працівника (RemoteEmployee)");
+        System.out.println("6. Вивести всіх працівників");
+        System.out.println("7. Вийти");
     }
 
     private static void createEmployee() {
@@ -95,6 +103,46 @@ public class Main {
             );
             employees.add(emp);
             System.out.println("Штатного працівника додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void createInternEmployee() {
+        System.out.println("\n--- Створення стажиста ---");
+        try {
+            InternEmployee emp = new InternEmployee(
+                    readNonEmptyString("Ім'я: "),
+                    readPositiveInt("ID: "),
+                    readNonNegativeDouble("Зарплата: "),
+                    readPosition("Посада: "),
+                    readEmail("Email: "),
+                    readAge("Вік: "),
+                    readNonEmptyString("Університет: "),
+                    readPositiveInt("Тривалість стажування (місяці): ")
+            );
+            employees.add(emp);
+            System.out.println("Стажиста додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: " + e.getMessage());
+        }
+    }
+
+    private static void createRemoteEmployee() {
+        System.out.println("\n--- Створення віддаленого працівника ---");
+        try {
+            RemoteEmployee emp = new RemoteEmployee(
+                    readNonEmptyString("Ім'я: "),
+                    readPositiveInt("ID: "),
+                    readNonNegativeDouble("Зарплата: "),
+                    readPosition("Посада: "),
+                    readEmail("Email: "),
+                    readAge("Вік: "),
+                    readNonEmptyString("Інструменти віддаленої роботи (через кому): "),
+                    readNonNegativeDouble("Погодинна ставка: ")
+            );
+            employees.add(emp);
+            System.out.println("Віддаленого працівника додано!");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка: " + e.getMessage());
         }

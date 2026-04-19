@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class Main {
     private static ArrayList<Employee> employees = new ArrayList<>();
     private static Scanner scanner = new Scanner(System.in);
-    private static final String DATA_FILE = "input.txt";
+    private static final String DATA_FILE = "Java/input.txt";
 
     public static void main(String[] args) {
         loadFromFile(DATA_FILE);
@@ -17,24 +17,27 @@ public class Main {
             int choice = readIntInput("Ваш вибір: ");
             switch (choice) {
                 case 1:
-                    createEmployee();
+                    searchMenu();
                     break;
                 case 2:
-                    createContractEmployee();
+                    createEmployee();
                     break;
                 case 3:
-                    createFullTimeEmployee();
+                    createContractEmployee();
                     break;
                 case 4:
-                    createInternEmployee();
+                    createFullTimeEmployee();
                     break;
                 case 5:
-                    createRemoteEmployee();
+                    createInternEmployee();
                     break;
                 case 6:
-                    displayAllEmployees();
+                    createRemoteEmployee();
                     break;
                 case 7:
+                    displayAllEmployees();
+                    break;
+                case 8:
                     saveToFile(DATA_FILE);
                     System.out.println("До побачення!");
                     scanner.close();
@@ -47,13 +50,86 @@ public class Main {
 
     private static void printMenu() {
         System.out.println("\n===== МЕНЮ =====");
-        System.out.println("1. Створити базового працівника (Employee)");
-        System.out.println("2. Створити контрактного працівника (ContractEmployee)");
-        System.out.println("3. Створити штатного працівника (FullTimeEmployee)");
-        System.out.println("4. Створити стажиста (InternEmployee)");
-        System.out.println("5. Створити віддаленого працівника (RemoteEmployee)");
-        System.out.println("6. Вивести всіх працівників");
-        System.out.println("7. Вийти");
+        System.out.println("1. Пошук об'єкта");
+        System.out.println("2. Створити базового працівника (Employee)");
+        System.out.println("3. Створити контрактного працівника (ContractEmployee)");
+        System.out.println("4. Створити штатного працівника (FullTimeEmployee)");
+        System.out.println("5. Створити стажиста (InternEmployee)");
+        System.out.println("6. Створити віддаленого працівника (RemoteEmployee)");
+        System.out.println("7. Вивести всіх працівників");
+        System.out.println("8. Вийти");
+    }
+
+    //ПОШУК
+    private static void searchMenu() {
+        while (true) {
+            System.out.println("\n--- Пошук працівників ---");
+            System.out.println("1. Пошук за ім'ям (частковий збіг)");
+            System.out.println("2. Пошук за ID (точний)");
+            System.out.println("3. Пошук за посадою (Position)");
+            System.out.println("4. Повернутися до головного меню");
+            int choice = readIntInput("Оберіть критерій: ");
+            switch (choice) {
+                case 1:
+                    searchByName();
+                    break;
+                case 2:
+                    searchById();
+                    break;
+                case 3:
+                    searchByPosition();
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Некоректний вибір.");
+            }
+        }
+    }
+
+    private static void searchByName() {
+        System.out.print("Введіть ім'я (або частину): ");
+        String searchName = scanner.nextLine().trim().toLowerCase();
+        ArrayList<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getName().toLowerCase().contains(searchName)) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results, "ім'ям \"" + searchName + "\"");
+    }
+
+    private static void searchById() {
+        int searchId = readPositiveInt("Введіть ID: ");
+        ArrayList<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getId() == searchId) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results, "ID = " + searchId);
+    }
+
+    private static void searchByPosition() {
+        Position searchPos = readPosition("Введіть посаду: ");
+        ArrayList<Employee> results = new ArrayList<>();
+        for (Employee emp : employees) {
+            if (emp.getPosition().equals(searchPos)) {
+                results.add(emp);
+            }
+        }
+        printSearchResults(results, "посаді " + searchPos);
+    }
+
+    private static void printSearchResults(ArrayList<Employee> results, String criteria) {
+        if (results.isEmpty()) {
+            System.out.println("Жодного працівника не знайдено за критерієм: " + criteria);
+        } else {
+            System.out.println("Знайдено " + results.size() + " працівник(ів) за критерієм \"" + criteria + "\":");
+            for (Employee emp : results) {
+                System.out.println(emp);
+            }
+        }
     }
 
     //Файлові операції

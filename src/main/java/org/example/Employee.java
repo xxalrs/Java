@@ -3,7 +3,6 @@ package org.example;
 import java.util.Objects;
 
 public class Employee {
-    private static int totalEmployees = 0;
     private String name;
     private int id;
     private double salary;
@@ -19,19 +18,9 @@ public class Employee {
         setPosition(position);
         setEmail(email);
         setAge(age);
-        totalEmployees++;
-    }
-
-    // Конструктор копіювання
-    public Employee(Employee other) {
-        this(other.name, other.id, other.salary, other.position, other.email, other.age);
     }
 
     // Гетери та сетери
-    public static int getTotalEmployees() {
-        return totalEmployees;
-    }
-
     public String getName() {
         return name;
     }

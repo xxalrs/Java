@@ -82,6 +82,76 @@ public class Main {
         }
     }
 
+    private static Employee parseEmployeeFromLine(String line) {
+        String[] parts = line.split("\\|");
+        if (parts.length < 2) return null;
+        String type = parts[0];
+        try {
+            switch (type) {
+                case "Employee":
+                    if (parts.length != 7) return null;
+                    return new Employee(
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            Double.parseDouble(parts[3]),
+                            Position.valueOf(parts[4]),
+                            parts[5],
+                            Integer.parseInt(parts[6])
+                    );
+                case "Contract":
+                    if (parts.length != 8) return null;
+                    return new ContractEmployee(
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            Double.parseDouble(parts[3]),
+                            Position.valueOf(parts[4]),
+                            parts[5],
+                            Integer.parseInt(parts[6]),
+                            Integer.parseInt(parts[7])
+                    );
+                case "FullTime":
+                    if (parts.length != 8) return null;
+                    return new FullTimeEmployee(
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            Double.parseDouble(parts[3]),
+                            Position.valueOf(parts[4]),
+                            parts[5],
+                            Integer.parseInt(parts[6]),
+                            Double.parseDouble(parts[7])
+                    );
+                case "Intern":
+                    if (parts.length != 9) return null;
+                    return new InternEmployee(
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            Double.parseDouble(parts[3]),
+                            Position.valueOf(parts[4]),
+                            parts[5],
+                            Integer.parseInt(parts[6]),
+                            parts[7],
+                            Integer.parseInt(parts[8])
+                    );
+                case "Remote":
+                    if (parts.length != 9) return null;
+                    return new RemoteEmployee(
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            Double.parseDouble(parts[3]),
+                            Position.valueOf(parts[4]),
+                            parts[5],
+                            Integer.parseInt(parts[6]),
+                            parts[7],
+                            Double.parseDouble(parts[8])
+                    );
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     private static void saveToFile(String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
             for (Employee emp : employees) {
@@ -90,6 +160,35 @@ public class Main {
             System.out.println("Збережено " + employees.size() + " записів у файл " + filename);
         } catch (IOException e) {
             System.out.println("Помилка запису у файл: " + e.getMessage());
+        }
+    }
+
+    private static String serializeEmployee(Employee emp) {
+        if (emp instanceof ContractEmployee) {
+            ContractEmployee c = (ContractEmployee) emp;
+            return String.format("Contract|%s|%d|%.2f|%s|%s|%d|%d",
+                    c.getName(), c.getId(), c.getSalary(), c.getPosition(),
+                    c.getEmail(), c.getAge(), c.getContractDuration());
+        } else if (emp instanceof FullTimeEmployee) {
+            FullTimeEmployee f = (FullTimeEmployee) emp;
+            return String.format("FullTime|%s|%d|%.2f|%s|%s|%d|%.2f",
+                    f.getName(), f.getId(), f.getSalary(), f.getPosition(),
+                    f.getEmail(), f.getAge(), f.getBonus());
+        } else if (emp instanceof InternEmployee) {
+            InternEmployee i = (InternEmployee) emp;
+            return String.format("Intern|%s|%d|%.2f|%s|%s|%d|%s|%d",
+                    i.getName(), i.getId(), i.getSalary(), i.getPosition(),
+                    i.getEmail(), i.getAge(), i.getUniversity(), i.getInternshipDuration());
+        } else if (emp instanceof RemoteEmployee) {
+            RemoteEmployee r = (RemoteEmployee) emp;
+            return String.format("Remote|%s|%d|%.2f|%s|%s|%d|%s|%.2f",
+                    r.getName(), r.getId(), r.getSalary(), r.getPosition(),
+                    r.getEmail(), r.getAge(), r.getRemoteTools(), r.getHourlyRate());
+        } else {
+            // базовий Employee
+            return String.format("Employee|%s|%d|%.2f|%s|%s|%d",
+                    emp.getName(), emp.getId(), emp.getSalary(), emp.getPosition(),
+                    emp.getEmail(), emp.getAge());
         }
     }
 

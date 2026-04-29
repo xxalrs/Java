@@ -3,4 +3,6 @@ EmployeeEntry|Employee|John Doe|101|2500.00|DEVELOPER|john@example.com|30|2
 EmployeeEntry|Contract|Alice Smith|102|3000.00|MANAGER|alice@example.com|35|12|1
 EmployeeEntry|FullTime|Bob Johnson|103|4000.00|ANALYST|bob@example.com|40|500.00|3
 EmployeeEntry|Intern|Eva Brown|104|800.00|INTERN|eva@example.com|20|KPI|6|5
-EmployeeEntry|Remote|Kostya|105|3500.00|DEVELOPER|kost9@example.com|28|Slack, Zoom, Jira|25.5|1
+EmployeeEntry|Remote|Kostya|105|3500.00|DEVELOPER|kost9@example.com|28|Slack, Zoom, Jira|25.50|1
+EmployeeEntry|Employee|Kostya|1|6000.00|DEVELOPER|kost@gmail.com|22|1
+EmployeeEntry|Employee|Kost|2|5000.00|DEVELOPER|someone@gmail.com|21|1

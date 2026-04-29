@@ -8,9 +8,23 @@ import java.util.Scanner;
 public class Main {
     private static Company company;
     private static Scanner scanner = new Scanner(System.in);
-    private static final String DATA_FILE = "Java/input.txt";
+    private static final String DATA_FILE = "input.txt";
 
     public static void main(String[] args) {
+        if (args.length < 1) {
+            System.out.println("Потрібно вказати шлях до файлу конфігурації БД, наприклад: java Main db.properties");
+            System.out.println("Робота без БД (тільки файл).");
+        } else {
+            try {
+                DatabaseManager.init(args[0]);
+                DatabaseManager.connect();
+                System.out.println("Підключення до БД успішне.");
+            } catch (Exception e) {
+                System.err.println("Не вдалося ініціалізувати БД: " + e.getMessage());
+                System.err.println("Продовження без БД.");
+            }
+        }
+
         loadFromFile(DATA_FILE);
         if (company == null) {
             System.out.println("Не вдалося завантажити компанію. Завершення роботи.");
@@ -33,6 +47,7 @@ public class Main {
                 case 4:
                     saveToFile(DATA_FILE);
                     System.out.println("Дані збережено. До побачення!");
+                    DatabaseManager.disconnect();
                     scanner.close();
                     return;
                 default:
@@ -179,12 +194,25 @@ public class Main {
                     System.out.println("Невірний тип.");
                     return;
             }
-            int quantity = readPositiveInt("Кількість таких працівників: ");
+            int quantity = readPositiveInt("Кількість: ");
             company.addNewEmployee(emp, quantity);
+            EmployeeEntry entry = findEntryByEmployee(emp);
+            if (entry != null && DatabaseManager.isConnected()) {
+                DatabaseManager.saveOrUpdate(entry);
+            }
             System.out.println("Працівника додано (або оновлено кількість).");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка: " + e.getMessage());
         }
+    }
+
+    private static EmployeeEntry findEntryByEmployee(Employee emp) {
+        for (EmployeeEntry entry : company.getAllEntries()) {
+            if (entry.getEmployee().equals(emp)) {
+                return entry;
+            }
+        }
+        return null;
     }
 
     private static void displayAllEmployees() {
